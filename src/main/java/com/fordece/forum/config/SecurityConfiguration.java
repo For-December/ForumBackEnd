@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -20,6 +21,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -30,6 +32,7 @@ import java.io.PrintWriter;
 
 @EnableWebSecurity
 @Configuration
+@EnableMethodSecurity // EnableGlobalMethodSecurity 已弃用
 public class SecurityConfiguration {
     @Resource
     JwtUtils utils;
@@ -96,7 +99,8 @@ public class SecurityConfiguration {
             HttpServletResponse response,
             Authentication authentication) throws IOException {
         response.setContentType("application/json;charset=utf-8");
-        User user = (User) authentication.getPrincipal();
+        //
+        UserDetails user = (UserDetails) authentication.getDetails();
         // 也可以放到 ThreadLocal 变量中————只需要查询一次数据库
         Account account = accountService.findAccountByNameOrEmail(user.getUsername());
         String token = utils.createJwt(user, account.getUsername(), account.getId());
