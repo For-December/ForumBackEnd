@@ -91,6 +91,7 @@ public class SecurityConfiguration {
             AuthenticationException exception) throws IOException {
         response.setContentType("application/json;charset=utf-8");
         response.setStatus(401);
+        System.out.println("#################################################");
         response.getWriter().write(RestBean.unauthorized(exception.getMessage()).asJsonString());
     }
 
@@ -100,7 +101,7 @@ public class SecurityConfiguration {
             Authentication authentication) throws IOException {
         response.setContentType("application/json;charset=utf-8");
         //
-        UserDetails user = (UserDetails) authentication.getDetails();
+        UserDetails user = (UserDetails) authentication.getPrincipal();
         // 也可以放到 ThreadLocal 变量中————只需要查询一次数据库
         Account account = accountService.findAccountByNameOrEmail(user.getUsername());
         String token = utils.createJwt(user, account.getUsername(), account.getId());
