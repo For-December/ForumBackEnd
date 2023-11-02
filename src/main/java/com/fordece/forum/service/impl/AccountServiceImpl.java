@@ -35,6 +35,7 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, Account> impl
 
     @Override
     public Account findAccountByNameOrEmail(String text) {
+        System.out.println("查库！！！！！！");
         return this.query().eq("username", text).or().eq("email", text).one();
     }
 

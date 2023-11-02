@@ -7,12 +7,13 @@ import com.fordece.forum.entity.BaseData;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @Data
 @TableName("db_account")
 @AllArgsConstructor
-public class Account implements BaseData {
+public class Account implements BaseData, Serializable {
     @TableId(type = IdType.AUTO)
     Long id;
     String nickname;

@@ -8,7 +8,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 
 public interface AccountService extends IService<Account>, UserDetailsService {
 
-
+    // 请注意，缓存查库结果时，返回值需要实现 Serializable
+    @Cacheable(cacheNames = "user",key = "#text",condition = "#text!=null") // 添加缓存
     Account findAccountByNameOrEmail(String text);
 
 }

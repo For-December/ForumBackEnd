@@ -2,10 +2,11 @@ package com.fordece.forum.entity.vo.response;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @Data
-public class AccountVO {
+public class AccountVO implements Serializable {
     Long id;
     String nickname;
     String username;
