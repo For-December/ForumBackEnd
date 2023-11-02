@@ -23,6 +23,9 @@ public class UserController {
     public ResponseEntity<RestBean<AccountVO>> info(String username){
         Account account = accountService.findAccountByNameOrEmail(username);
         if (account==null){
+            // 不可能进到这里吧
+            // 和用户名不匹配直接deny
+            // 不对，管理员可以用这个
             return ResponseEntity.notFound().build();
         }
         AccountVO vo = account.asViewObject(AccountVO.class);
