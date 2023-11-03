@@ -22,7 +22,7 @@ public class Account implements BaseData, Serializable {
     Byte status; // 0 正常 1 停用
     String email;
     String avatar; // 头像路径（不要存二进制！
-    String balance; // 用户声望什么的
+    Long balance; // 用户声望什么的
     String role;
     Date registerTime;
     Date modifyTime;

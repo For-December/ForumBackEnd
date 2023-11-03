@@ -1,12 +1,15 @@
 package com.fordece.forum.service.impl;
 
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fordece.forum.entity.dto.Account;
+import com.fordece.forum.entity.vo.request.EmailRegisterVO;
 import com.fordece.forum.mapper.AccountMapper;
 import com.fordece.forum.service.AccountService;
 import com.fordece.forum.utils.Const;
 import com.fordece.forum.utils.FlowUtils;
 import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -15,15 +18,14 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
+@Slf4j
 @Service
 public class AccountServiceImpl extends ServiceImpl<AccountMapper, Account> implements AccountService {
     @Override
@@ -56,6 +58,9 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, Account> impl
     @Resource
     FlowUtils flowUtils;
 
+    @Resource
+    PasswordEncoder encoder;
+
     @Override
     public String registerEmailVerifyCode(String type, String email, String ip) {
 
@@ -72,6 +77,38 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, Account> impl
 
             return null;
         }
+    }
+
+    @Override
+    public String registerEmailAccount(EmailRegisterVO emailRegisterVO) {
+        String email = emailRegisterVO.getEmail();
+        String key = Const.VERIFY_EMAIL_DATA + email;
+        String code = stringRedisTemplate.opsForValue().get(key);
+        if (code == null) return "请先获取验证码~";
+        if (!code.equals(emailRegisterVO.getCode())) {
+            log.warn("[验证码]=> redis: {} != user: {}", code, emailRegisterVO.getCode());
+            return "验证码有误，请重新输入";
+        }
+        if (this.existsAccountByField("email", email)) {
+            return "该email已被其他用户注册~";
+        }
+        if (this.existsAccountByField("username", emailRegisterVO.getUsername())) {
+            return "该用户名已被注册~";
+        }
+
+        String password = encoder.encode(emailRegisterVO.getPassword());
+        Account account = new Account(null, null, emailRegisterVO.getUsername(), password, (byte) 0, email, "avatar", 0L, "user", new Date(), null, null, false);
+
+
+        if (!this.save(account)) {
+            return "注册用户时出现内部错误，请联系管理员";
+        }
+        stringRedisTemplate.delete(key); // 注册成功则删除验证码
+        return null;
+    }
+
+    private boolean existsAccountByField(String field, String value) {
+        return this.baseMapper.exists(Wrappers.<Account>query().eq(field, value));
     }
 
     private boolean verifyLimit(String ip) {

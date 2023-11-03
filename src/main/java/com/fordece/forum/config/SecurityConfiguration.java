@@ -43,17 +43,13 @@ public class SecurityConfiguration {
     @Resource
     AccountService accountService;
 
-    @Bean
-    BCryptPasswordEncoder passwordEncoder() {
-        // SpringSecurity 要求编码器，对传入的原始密码字符串加密
-        return new BCryptPasswordEncoder();
-    }
+
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
                 .authorizeHttpRequests(conf -> conf
-                        .requestMatchers("/api/v1/auth/**").permitAll()
+                        .requestMatchers("/api/v1/auth/**", "/error").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(conf -> conf

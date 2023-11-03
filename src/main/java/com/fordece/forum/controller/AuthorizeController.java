@@ -1,15 +1,21 @@
 package com.fordece.forum.controller;
 
 import com.fordece.forum.entity.RestBean;
+import com.fordece.forum.entity.vo.request.EmailRegisterVO;
+import com.fordece.forum.entity.vo.response.AuthorizeVO;
 import com.fordece.forum.service.AccountService;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Pattern;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.function.Supplier;
+
+
+@Validated
 @RestController
 @RequestMapping("/api/v1/auth")
 public class AuthorizeController {
@@ -19,16 +25,30 @@ public class AuthorizeController {
 
 
     @GetMapping("/ask-code")
-    public ResponseEntity<RestBean<String>> askVerifyCode(@RequestParam String email,
-                                                          @RequestParam String type,
-                                                          HttpServletRequest request) {
+    public ResponseEntity<RestBean<Void>>
+    askVerifyCode(@RequestParam @Email String email,
+                  @RequestParam @Pattern(regexp = "(register|reset)") String type,
+                  HttpServletRequest request) {
 
-        String message = accountService.registerEmailVerifyCode(type, email, request.getRemoteAddr());
+        return this.messageHandle(() ->
+                accountService.registerEmailVerifyCode(type, email, request.getRemoteAddr()));
+
+
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<RestBean<Void>> register(@RequestBody EmailRegisterVO vo) {
+        return this.messageHandle(() ->
+                accountService.registerEmailAccount(vo));
+
+    }
+
+
+    private ResponseEntity<RestBean<Void>> messageHandle(Supplier<String> action) {
+        String message = action.get();
         return message == null ?
                 ResponseEntity.ok(RestBean.success()) :
                 ResponseEntity.badRequest().body(RestBean.failure(400, message));
-
-
     }
 
 
