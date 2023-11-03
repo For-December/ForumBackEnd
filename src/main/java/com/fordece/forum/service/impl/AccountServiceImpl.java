@@ -23,10 +23,9 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, Account> impl
         if (account == null) {
             throw new UsernameNotFoundException("用户名或密码错误");
         }
-        System.out.println("tet");
         val s = User.withUsername(username) // 可能是邮箱
                 .password(account.getPassword())
-                .authorities(new SimpleGrantedAuthority("tesadskngfklbdsgt"))
+                .authorities(new SimpleGrantedAuthority("user/test"))
                 .build(); // role和authorities只能生效一个
         System.out.println(s);
         return s;
@@ -41,9 +40,7 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, Account> impl
 
     private static List<GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority("useradf"));
-        System.out.println(new SimpleGrantedAuthority("user/test")+"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa#############################################");
-//        return authorities.toArray(new GrantedAuthority[authorities.size()]);
+        authorities.add(new SimpleGrantedAuthority("user/test"));
         return authorities;
     }
 

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/test")
 public class TestController {
     @GetMapping("/hello")
-    @PreAuthorize("hasAuthority('ROLE_user/test')")// or hasRole('user') // 好好好，这里必须加 ROLE_前缀
+    @PreAuthorize("hasAuthority('user/test')")// or hasRole('user') // 好好好，这里必须加 ROLE_前缀
     public String test() {
         return "Hello World!";
 
