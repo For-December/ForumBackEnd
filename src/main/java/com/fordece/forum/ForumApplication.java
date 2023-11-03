@@ -10,7 +10,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class ForumApplication {
     static final Logger logger = LoggerFactory.getLogger(ForumApplication.class);
+
     public static void main(String[] args) {
+        System.setProperty("spring.amqp.deserialization.trust.all", "true");
+
         SpringApplication.run(ForumApplication.class, args);
         logger.warn("测试");
     }
