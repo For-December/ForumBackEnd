@@ -12,6 +12,8 @@ import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -30,6 +32,8 @@ import java.util.concurrent.TimeUnit;
 public class AccountServiceImpl extends ServiceImpl<AccountMapper, Account> implements AccountService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        // 这里不会缓存，因为是内部类调用，
+        // 不过同一个用户的登录一般也不会多次触发，无所谓了
         Account account = findAccountByNameOrEmail(username);
         if (account == null) {
             throw new UsernameNotFoundException("用户名或密码错误");
@@ -43,12 +47,14 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, Account> impl
     }
 
 
+    // 请注意，缓存查库结果时，返回值需要实现 Serializable
+    // 添加缓存
+    @Cacheable(cacheNames = "users", key = "#text", condition = "#text!=null")
     @Override
     public Account findAccountByNameOrEmail(String text) {
         System.out.println("查库！！！！！！");
         return this.query().eq("username", text).or().eq("email", text).one();
     }
-
     @Resource
     AmqpTemplate amqpTemplate;
 

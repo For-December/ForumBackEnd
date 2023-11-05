@@ -7,6 +7,7 @@ import com.fordece.forum.entity.BaseData;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -14,6 +15,10 @@ import java.util.Date;
 @TableName("db_account")
 @AllArgsConstructor
 public class Account implements BaseData, Serializable {
+
+    @Serial
+    private static final long serialVersionUID = -2093426521462799511L;
+
     @TableId(type = IdType.AUTO)
     Long id;
     String nickname;
