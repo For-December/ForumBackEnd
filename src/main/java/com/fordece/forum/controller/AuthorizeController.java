@@ -8,6 +8,7 @@ import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +27,7 @@ public class AuthorizeController {
 
     @GetMapping("/ask-code")
     public ResponseEntity<RestBean<Void>>
-    askVerifyCode(@RequestParam @Email String email,
+    askVerifyCode(@RequestParam @Email @Length(min = 4, max = 25) String email,
                   @RequestParam @Pattern(regexp = "(register|reset)") String type,
                   HttpServletRequest request) {
 

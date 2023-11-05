@@ -113,7 +113,7 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, Account> impl
 
     private boolean verifyLimit(String ip) {
         String key = Const.VERIFY_EMAIL_LIMIT + ip;
-        return flowUtils.limitOnceCheck(key, 60);
+        return flowUtils.limitOnceCheck(key, 30);
     }
 
     private static List<GrantedAuthority> getAuthorities() {
