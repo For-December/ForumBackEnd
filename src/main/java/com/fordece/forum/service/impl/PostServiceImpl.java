@@ -9,7 +9,6 @@ import com.fordece.forum.service.PostService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -22,7 +21,7 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
 
     @Override
     public List<Post> fetchPosts(Integer pageNum, Integer pageSize) {
-        Page<Post> page = new Page<>(pageNum,pageSize);
+        Page<Post> page = new Page<>(pageNum, pageSize);
         IPage<Post> postPage = this.baseMapper.selectPage(page, null);// 不指定查询条件
 
         return postPage.getRecords();

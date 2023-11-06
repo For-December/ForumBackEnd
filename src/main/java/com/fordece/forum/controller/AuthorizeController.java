@@ -2,7 +2,6 @@ package com.fordece.forum.controller;
 
 import com.fordece.forum.entity.RestBean;
 import com.fordece.forum.entity.vo.request.EmailRegisterVO;
-import com.fordece.forum.entity.vo.response.AuthorizeVO;
 import com.fordece.forum.service.AccountService;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
