@@ -20,17 +20,17 @@ public class Account implements BaseData, Serializable {
     private static final long serialVersionUID = -2093426521462799511L;
 
     @TableId(type = IdType.AUTO)
-    Long id;
-    String nickname;
-    String username;
-    String password;
-    Byte status; // 0 正常 1 停用
-    String email;
-    String avatar; // 头像路径（不要存二进制！
-    Long balance; // 用户声望什么的
-    String role;
-    Date registerTime;
-    Date modifyTime;
-    Date deleteTime;
-    Boolean isDelete; // 是否已删除，删除则清空其他数据，已发布帖子变为匿名用户
+    private Long id;
+    private String nickname;
+    private String username;
+    private String password;
+    private Byte status; // 0 正常 1 停用
+    private String email;
+    private String avatar; // 头像路径（不要存二进制！
+    private Long balance; // 用户声望什么的
+    private String role;
+    private Date registerTime;
+    private Date modifyTime;
+    private Date deleteTime;
+    private Boolean isDelete; // 是否已删除，删除则清空其他数据，已发布帖子变为匿名用户
 }
