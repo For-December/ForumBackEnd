@@ -18,8 +18,8 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 // 限流过滤器
-//@Component
-//@Order(Const.ORDER_LIMIT)
+@Component
+@Order(Const.ORDER_LIMIT)
 public class FlowLimitFilter extends HttpFilter {
 
     @Resource
