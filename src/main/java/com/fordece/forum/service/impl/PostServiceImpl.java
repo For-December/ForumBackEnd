@@ -1,5 +1,6 @@
 package com.fordece.forum.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -29,8 +30,11 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
 
     @Override
     public List<Post> fetchPosts(Integer pageNum, Integer pageSize) {
+        // 创建条件构造器
+        QueryWrapper<Post> queryWrapper = new QueryWrapper<>();
+        queryWrapper.orderByDesc("latest_replied_time"); // 设置时间范围条件
         Page<Post> page = new Page<>(pageNum, pageSize);
-        IPage<Post> postPage = this.baseMapper.selectPage(page, null);// 不指定查询条件
+        IPage<Post> postPage = this.baseMapper.selectPage(page, queryWrapper);// 不指定查询条件
 
         return postPage.getRecords();
     }
