@@ -37,7 +37,7 @@ public class AuthorizeController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<RestBean<Void>> register(@RequestBody EmailRegisterVO vo) {
+    public ResponseEntity<RestBean<Void>> register(@RequestBody @Validated EmailRegisterVO vo) {
         return this.messageHandle(() ->
                 accountService.registerEmailAccount(vo));
 

@@ -5,6 +5,7 @@ import com.fordece.forum.entity.RestBean;
 import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -22,5 +23,12 @@ public class CommonController {
         log.warn("Resolve [{}: {}]", e.getClass().getName(), e.getMessage());
         return ResponseEntity.badRequest().body(RestBean.failure(400, "请求参数有误，检查一下再试试~（详细日志在后端捏）"));
     }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<RestBean<Void>> methodArgumentNotValidException(MethodArgumentNotValidException e) {
+        log.warn("Resolve [{}: {}]", "aa", e.getMessage());
+        return ResponseEntity.badRequest().body(RestBean.failure(400, "请求参数有误，检查一下再试试~（详细日志在后端捏）"));
+    }
+
 }
 
