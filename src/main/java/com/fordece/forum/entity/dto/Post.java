@@ -21,6 +21,7 @@ public class Post implements BaseData, Serializable {
     @TableId(type = IdType.AUTO)
     private Long id;
     private Long authorId;
+    private String authorName;
     private Long commentCount;
     private Long upvoteCount;
     private String tags;

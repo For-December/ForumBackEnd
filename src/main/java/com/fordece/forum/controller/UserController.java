@@ -32,4 +32,9 @@ public class UserController {
 
         return ResponseEntity.ok(RestBean.success(vo));
     }
+
+//    @GetMapping("/:id")
+//    public ResponseEntity<RestBean<AccountVO>> tets(){
+//
+//    }
 }

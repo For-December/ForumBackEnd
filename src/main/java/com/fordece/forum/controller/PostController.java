@@ -11,6 +11,7 @@ import com.fordece.forum.service.PostService;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -37,7 +38,8 @@ public class PostController {
     }
 
     @PostMapping("")
-    public ResponseEntity<RestBean<Void>> createPost(@RequestBody @Valid CreatePostVO vo) {
+    @PreAuthorize("#vo.authorName == authentication.name") // 防止冒充发帖
+    public ResponseEntity<RestBean<Void>> createPost(@RequestBody @Valid CreatePostVO vo) { // 只有发帖名和token名一致才能发帖
         postService.createPost(vo);
         return ResponseEntity.ok(RestBean.success());
     }
