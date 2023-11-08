@@ -40,7 +40,9 @@ public class PostController {
     @PostMapping("")
     @PreAuthorize("#vo.authorName == authentication.name") // 防止冒充发帖
     public ResponseEntity<RestBean<Void>> createPost(@RequestBody @Valid CreatePostVO vo) { // 只有发帖名和token名一致才能发帖
-        postService.createPost(vo);
+        if (!postService.createPost(vo)) {
+            return ResponseEntity.badRequest().body(RestBean.forbidden("请勿顶替别人发贴~"));
+        }
         return ResponseEntity.ok(RestBean.success());
     }
 }
