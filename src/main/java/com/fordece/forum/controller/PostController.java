@@ -43,6 +43,7 @@ public class PostController {
         if (!postService.createPost(vo)) {
             return ResponseEntity.badRequest().body(RestBean.forbidden("请勿顶替别人发贴~"));
         }
+        postService.clearCache("latest");
         return ResponseEntity.ok(RestBean.success());
     }
 }

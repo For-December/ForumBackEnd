@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.fordece.forum.entity.dto.Post;
 import com.fordece.forum.entity.vo.request.CreatePostVO;
+import org.springframework.cache.annotation.Cacheable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,5 +15,7 @@ public interface PostService extends IService<Post> {
     List<Post> fetchPosts(Integer pageNum, Integer pageSize);
 
     Boolean createPost(CreatePostVO vo);
+
+    void clearCache(String key);
 
 }
