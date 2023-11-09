@@ -28,7 +28,15 @@ public interface BaseData {
 
     private void convert(Field field, Object vo) {
         try {
-            Field source = this.getClass().getDeclaredField(field.getName());
+            Field source;
+            try {
+                source = this.getClass().getDeclaredField(field.getName());
+            } catch (NoSuchFieldException e) {
+                source = this.getClass()
+                        .getSuperclass()
+                        .getDeclaredField(field.getName());
+            } // 获取父类字段
+
             field.setAccessible(true);
             source.setAccessible(true);
             field.set(vo, source.get(this)); // 将当前对象字段的值设置给新对象

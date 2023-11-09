@@ -31,7 +31,7 @@ public class PostController {
                 posts.stream().map(
                         t -> t.asViewObject(PostVO.class)
                 ).toList());
-
+        System.out.println(postPage.getRecords().get(0).toString());
         return ResponseEntity.ok(RestBean.success(postPage));
 
 
