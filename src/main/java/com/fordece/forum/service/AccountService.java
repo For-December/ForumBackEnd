@@ -7,6 +7,7 @@ import com.fordece.forum.entity.vo.response.AccountVO;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
+// 接口可以多继承
 public interface AccountService extends IService<Account>, UserDetailsService {
 
 

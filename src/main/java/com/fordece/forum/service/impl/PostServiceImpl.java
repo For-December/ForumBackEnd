@@ -28,7 +28,7 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
 
     @Override
     public Post getPostById(Long id) {
-        return null;
+        return this.query().eq("id", id).one();
     }
 
     @Override
