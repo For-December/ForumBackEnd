@@ -46,4 +46,12 @@ public class PostController {
         postService.clearCache("latest");
         return ResponseEntity.ok(RestBean.success());
     }
+
+
+    @GetMapping("/{id}")
+    public ResponseEntity<RestBean<PostVO>> getPostById(@PathVariable Long id) { // 只有发帖名和token名一致才能发帖
+        Post post = postService.getPostById(id);
+        PostVO vo = post.asViewObject(PostVO.class);
+        return ResponseEntity.ok(RestBean.success(vo));
+    }
 }
