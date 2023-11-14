@@ -28,7 +28,7 @@ public class Comment implements BaseData, Serializable {
     private Date deleteTime;
 
     //逻辑删除（0 未删除、1 删除）
-    @TableLogic(value = "0", delval = "1")
+    @TableLogic(value = "false", delval = "true")
     @TableField(fill = FieldFill.INSERT)
-    private Byte isDelete; // 是否已删除，删除则清空其他数据，已发布帖子变为匿名用户
+    private Boolean isDelete; // 是否已删除，删除则清空其他数据，已发布帖子变为匿名用户
 }

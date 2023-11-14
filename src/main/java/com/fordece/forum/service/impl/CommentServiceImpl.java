@@ -54,7 +54,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
             log.warn("存在用户顶替评论：{} != {}", vo.getAuthorId(), vo.getAuthorName());
             return false;
         }
-        Comment comment = new Comment(null,vo.getPostId(), vo.getAuthorId(),vo.getAuthorName(),0L,vo.getContent(),new Date(),new Date(),null,(byte)0);
+        Comment comment = new Comment(null,vo.getPostId(), vo.getAuthorId(),vo.getAuthorName(),0L,vo.getContent(),new Date(),new Date(),null,false);
 
 
 

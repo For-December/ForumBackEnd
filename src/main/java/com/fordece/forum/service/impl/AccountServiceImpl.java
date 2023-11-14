@@ -104,7 +104,7 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, Account> impl
         }
 
         String password = encoder.encode(emailRegisterVO.getPassword());
-        Account account = new Account(null, null, emailRegisterVO.getUsername(), password, (byte) 0, email, "avatar", 0L, "user", new Date(), null, null, (byte) 0);
+        Account account = new Account(null, null, emailRegisterVO.getUsername(), password, (byte) 0, email, "avatar", 0L, "user", new Date(), null, null, false);
 
 
         if (!this.save(account)) {
