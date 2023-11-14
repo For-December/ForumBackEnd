@@ -23,7 +23,7 @@ public class CommentController {
     CommentService commentService;
 
     @GetMapping("")
-    public ResponseEntity<RestBean<IPage<CommentVO>>> getPosts(Long postId, Integer pageNum, Integer pageSize) {
+    public ResponseEntity<RestBean<IPage<CommentVO>>> getComments(Long postId, Integer pageNum, Integer pageSize) {
 
         List<Comment> comments = commentService.fetchComments(postId, pageNum, pageSize);
         Page<CommentVO> commentPage = new Page<>();

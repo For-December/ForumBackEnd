@@ -61,8 +61,8 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
             return false;
         }
 
-        Post post = new Post(null, vo.getAuthorId(), vo.getAuthorName(), 0L, 0L, vo.getTags(), "标题", vo.getContent(), new Date(), new Date(), new Date(), null);
-        this.save(post);
-        return true;
+        Post post = new Post(null, vo.getAuthorId(), vo.getAuthorName(), 0L, 0L, vo.getTags(), "标题", vo.getContent(), new Date(), new Date(), new Date(), null, false);
+
+        return this.save(post);
     }
 }
