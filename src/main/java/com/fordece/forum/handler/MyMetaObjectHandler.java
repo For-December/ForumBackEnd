@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 public class MyMetaObjectHandler implements MetaObjectHandler {
     @Override
     public void insertFill(MetaObject metaObject) {
-        this.strictInsertFill(metaObject, "isDelete", Boolean.class, false);
+        this.strictInsertFill(metaObject, "isDelete", Byte.class, (byte) 0);
 
     }
 

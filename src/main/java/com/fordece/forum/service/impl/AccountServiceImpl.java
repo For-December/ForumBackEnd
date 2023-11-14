@@ -55,6 +55,7 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, Account> impl
         System.out.println("查库！！！！！！");
         return this.query().eq("username", text).or().eq("email", text).one();
     }
+
     @Resource
     AmqpTemplate amqpTemplate;
 
@@ -103,7 +104,7 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, Account> impl
         }
 
         String password = encoder.encode(emailRegisterVO.getPassword());
-        Account account = new Account(null, null, emailRegisterVO.getUsername(), password, (byte) 0, email, "avatar", 0L, "user", new Date(), null, null, false);
+        Account account = new Account(null, null, emailRegisterVO.getUsername(), password, (byte) 0, email, "avatar", 0L, "user", new Date(), null, null, (byte) 0);
 
 
         if (!this.save(account)) {

@@ -49,7 +49,7 @@ public class CommentController {
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<RestBean<CommentVO>> getPostById(@PathVariable Long id) {
+    public ResponseEntity<RestBean<CommentVO>> getCommentById(@PathVariable Long id) {
         Comment comment = commentService.getCommentById(id);
         CommentVO vo = comment.asViewObject(CommentVO.class);
         return ResponseEntity.ok(RestBean.success(vo));

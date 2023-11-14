@@ -40,7 +40,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
         // 创建条件构造器
         QueryWrapper<Comment> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("post_id", postId);
-        queryWrapper.orderByDesc("latest_replied_time"); // 设置时间范围条件
+        queryWrapper.orderByDesc("modify_time"); // 设置时间范围条件
         Page<Comment> page = new Page<>(pageNum, pageSize);
         IPage<Comment> commentPage = this.baseMapper.selectPage(page, queryWrapper);// 不指定查询条件
         return commentPage.getRecords();
@@ -54,7 +54,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
             log.warn("存在用户顶替评论：{} != {}", vo.getAuthorId(), vo.getAuthorName());
             return false;
         }
-        Comment comment = new Comment(null,vo.getPostId(), vo.getAuthorId(),vo.getAuthorName(),0L,vo.getContent(),new Date(),new Date(),null,false);
+        Comment comment = new Comment(null,vo.getPostId(), vo.getAuthorId(),vo.getAuthorName(),0L,vo.getContent(),new Date(),new Date(),null,(byte)0);
 
 
 
