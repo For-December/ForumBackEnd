@@ -1,8 +1,6 @@
 package com.fordece.forum.entity.dto;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import com.fordece.forum.entity.BaseData;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -32,5 +30,9 @@ public class Account implements BaseData, Serializable {
     private Date registerTime;
     private Date modifyTime;
     private Date deleteTime;
+
+    //逻辑删除（0 未删除、1 删除）
+    @TableLogic(value = "false", delval = "true")
+    @TableField(fill = FieldFill.INSERT)
     private Boolean isDelete; // 是否已删除，删除则清空其他数据，已发布帖子变为匿名用户
 }
