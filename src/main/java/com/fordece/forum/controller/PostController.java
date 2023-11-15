@@ -10,6 +10,7 @@ import com.fordece.forum.entity.vo.response.PostVO;
 import com.fordece.forum.service.PostService;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -53,5 +54,13 @@ public class PostController {
         Post post = postService.getPostById(id);
         PostVO vo = post.asViewObject(PostVO.class);
         return ResponseEntity.ok(RestBean.success(vo));
+    }
+
+
+    @GetMapping("/star/{id}")
+    @PreAuthorize("#userName == authentication.name")
+    public ResponseEntity<RestBean<Void>> getPostById(@PathVariable @Min((0)) Long id, @RequestParam @Min(0) Long userId, @RequestParam @Min(0) String userName) { // 点赞名和token一致
+
+        return ResponseEntity.ok(RestBean.success());
     }
 }
