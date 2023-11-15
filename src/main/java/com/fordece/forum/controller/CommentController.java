@@ -10,6 +10,8 @@ import com.fordece.forum.entity.vo.response.CommentVO;
 import com.fordece.forum.service.CommentService;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Size;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -49,7 +51,7 @@ public class CommentController {
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<RestBean<CommentVO>> getCommentById(@PathVariable Long id) {
+    public ResponseEntity<RestBean<CommentVO>> getCommentById(@PathVariable @Min(0) Long id) { // 必须大于等于0
         Comment comment = commentService.getCommentById(id);
         CommentVO vo = comment.asViewObject(CommentVO.class);
         return ResponseEntity.ok(RestBean.success(vo));
