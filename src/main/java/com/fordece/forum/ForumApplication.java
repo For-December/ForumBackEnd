@@ -1,5 +1,6 @@
 package com.fordece.forum;
 
+import com.fordece.forum.utils.ChatGPTUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -13,9 +14,10 @@ public class ForumApplication {
 
     public static void main(String[] args) {
         System.setProperty("spring.amqp.deserialization.trust.all", "true");
-
         SpringApplication.run(ForumApplication.class, args);
         logger.warn("测试");
+//        ChatGPTUtils.checkPost();
+
     }
 
 }
