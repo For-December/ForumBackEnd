@@ -11,13 +11,16 @@ import com.fordece.forum.service.CommentService;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/v1/comments")
 public class CommentController {
@@ -55,5 +58,32 @@ public class CommentController {
         Comment comment = commentService.getCommentById(id);
         CommentVO vo = comment.asViewObject(CommentVO.class);
         return ResponseEntity.ok(RestBean.success(vo));
+    }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("#authorName == authentication.name") // 普通用户只能删除自己的评论
+    public ResponseEntity<RestBean<Void>> deleteCommentById(
+            @PathVariable @Min(0) Long id,
+            @RequestParam @NotNull Long postId,
+            @RequestParam @NotNull String authorName
+    ) {
+        if (commentService.query()
+                .eq("id", id)
+                .eq("post_id", postId)
+                .eq("author_name", authorName)
+                .oneOpt().isEmpty()) {// 评论不存在，或是用户尝试删除其他人的贴子
+            log.warn("用户非法删除评论：id: {} authorName: {}", id, authorName);
+            return ResponseEntity.badRequest().body(RestBean.forbidden("您只能删除自己已发布的评论~"));
+        }
+
+
+        if (commentService.removeById(id)) {
+            commentService.clearCache(postId.toString());
+            return ResponseEntity.ok(RestBean.success());
+        }
+
+        return ResponseEntity.badRequest().body(RestBean.forbidden("评论删除出错，请联系管理员~"));
+
+
     }
 }
