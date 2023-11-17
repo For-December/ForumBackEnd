@@ -8,6 +8,8 @@ public class Const {
     public static final String FLOW_LIMIT_COUNTER = "flow:counter:";
     public static final String FLOW_LIMIT_BLOCK = "flow:block:";
 
+    public static final String STAR_COUNTER = "star:counter:"; // 用户点赞记录，每天30个，凌晨清空
+
     public static final int ORDER_LIMIT = -101;
 
     public static final int ORDER_CORS = -102;

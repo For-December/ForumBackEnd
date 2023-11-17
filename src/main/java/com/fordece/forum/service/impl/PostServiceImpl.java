@@ -10,6 +10,7 @@ import com.fordece.forum.entity.vo.request.CreatePostVO;
 import com.fordece.forum.mapper.PostMapper;
 import com.fordece.forum.service.AccountService;
 import com.fordece.forum.service.PostService;
+import com.fordece.forum.service.StarService;
 import jakarta.annotation.Resource;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;

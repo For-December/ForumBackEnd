@@ -8,9 +8,11 @@ import com.fordece.forum.entity.dto.Post;
 import com.fordece.forum.entity.vo.request.CreatePostVO;
 import com.fordece.forum.entity.vo.response.PostVO;
 import com.fordece.forum.service.PostService;
+import com.fordece.forum.service.StarService;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
+import lombok.val;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -57,10 +59,29 @@ public class PostController {
     }
 
 
+    @Resource
+    StarService starService;
+
     @GetMapping("/star/{id}")
     @PreAuthorize("#userName == authentication.name")
     public ResponseEntity<RestBean<Void>> getPostById(@PathVariable @Min((0)) Long id, @RequestParam @Min(0) Long userId, @RequestParam @Min(0) String userName) { // 点赞名和token一致
 
+        // redis 用户每日赞计数器++
+
+        // 贴子点赞数++
+
+//        starService.query()
+//                .eq("user_id", userId)
+//                .eq("user_name", userName)
+//                .eq("post_id", id).oneOpt()
+//                .ifPresentOrElse(star -> {
+//                    // 该用户已点赞
+//
+//                    return;
+//                }, () -> {
+//
+//                    return;
+//                });
         return ResponseEntity.ok(RestBean.success());
     }
 }

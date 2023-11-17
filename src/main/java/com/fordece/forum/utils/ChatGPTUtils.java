@@ -34,87 +34,7 @@ public class ChatGPTUtils {
         ChatGPTUtils.key = key;
     }
 
-
-    public static void checkPost() {
-        ChatGPT chatGPT = ChatGPT.builder()
-                .timeout(600)
-                .apiKey(key)
-                .apiHost(endpoint) //反向代理地址
-                .build()
-                .init();
-        List<ChatFunction> functions = new ArrayList<>();
-        ChatFunction function = new ChatFunction();
-        function.setName("getCurrentWeather");
-        function.setDescription("获取给定位置的当前天气");
-        function.setParameters(ChatFunction.ChatParameter.builder()
-                .type("object")
-                .required(List.of("location"))
-                .properties(JSON.parseObject("{\n" +
-                        "          \"location\": {\n" +
-                        "            \"type\": \"string\",\n" +
-                        "            \"description\": \"The city and state, e.g. San Francisco, " +
-                        "CA\"\n" +
-                        "          },\n" +
-                        "          \"unit\": {\n" +
-                        "            \"type\": \"string\",\n" +
-                        "            \"enum\": [\"celsius\", \"fahrenheit\"]\n" +
-                        "          }\n" +
-                        "        }"))
-                .build());
-        functions.add(function);
-
-        Message message = Message.of("上海的天气怎么样？");
-        ChatCompletion chatCompletion = ChatCompletion.builder()
-                .model(ChatCompletion.Model.GPT_3_5_TURBO_0613.getName())
-                .messages(List.of(message))
-                .functions(functions)
-                .maxTokens(8000)
-                .temperature(0.9)
-                .build();
-        ChatCompletionResponse response = chatGPT.chatCompletion(chatCompletion);
-        ChatChoice choice = response.getChoices().get(0);
-        Message res = choice.getMessage();
-        System.out.println(res);
-        if ("function_call".equals(choice.getFinishReason())) {
-
-            FunctionCallResult functionCall = res.getFunctionCall();
-            String functionCallName = functionCall.getName();
-
-            if ("getCurrentWeather".equals(functionCallName)) {
-                String arguments = functionCall.getArguments();
-                JSONObject jsonObject = JSON.parseObject(arguments);
-                String location = jsonObject.getString("location");
-                String unit = jsonObject.getString("unit");
-                String weather = getCurrentWeather(location, unit);
-
-                callWithWeather(weather, res, functions, chatGPT);
-            }
-        }
-    }
-
-    private static void callWithWeather(String weather, Message res, List<ChatFunction> functions, ChatGPT chatGPT) {
-        Message message = Message.of("上海的天气怎么样？");
-        Message function1 = Message.ofFunction(weather);
-        function1.setName("getCurrentWeather");
-        ChatCompletion chatCompletion = ChatCompletion.builder()
-                .model(ChatCompletion.Model.GPT_3_5_TURBO_0613.getName())
-                .messages(Arrays.asList(message, res, function1))
-                .functions(functions)
-                .maxTokens(8000)
-                .temperature(0.9)
-                .build();
-        ChatCompletionResponse response = chatGPT.chatCompletion(chatCompletion);
-        ChatChoice choice = response.getChoices().get(0);
-        Message res2 = choice.getMessage();
-        //上海目前天气晴朗，气温为 22 摄氏度。
-        System.out.println(res2.getContent());
-    }
-
-    public static String getCurrentWeather(String location, String unit) {
-        return "{ \"temperature\": 22, \"unit\": \"celsius\", \"description\": \"晴朗\" }";
-    }
-
-    public static String check() {
+    public static Boolean check(String content) {
         System.out.println(endpoint);
         ChatGPTStream chatGPTStream = ChatGPTStream.builder()
                 .timeout(600)
@@ -122,16 +42,22 @@ public class ChatGPTUtils {
                 .apiHost(endpoint) //反向代理地址
                 .build()
                 .init();
-
         ConsoleStreamListener listener = new ConsoleStreamListener();
-        Message message = Message.of("写一段七言绝句诗，题目是：火锅！");
+        Message message = Message.of("你是某校园论坛的审核员，下面引号包裹的是一则校园论坛的贴子内容，它是否符合大学生身心健康，可发布？请仅用`true`+{通过}或`false`+{你的不通过理由}回答：\n" +
+                "\"" + content + "\"");
         ChatCompletion chatCompletion = ChatCompletion.builder()
                 .messages(List.of(message))
                 .build();
         chatGPTStream.streamChatCompletion(chatCompletion, listener);
 
-        System.out.println(message);
-        return null;
+        listener.setOnComplate(s -> {
+            if (s.contains("true")) {
+                System.out.println(s);
+            } else {
+                System.out.println(s.substring(s.indexOf('{')));
+            }
+        });
+        return false;
 
     }
 }
