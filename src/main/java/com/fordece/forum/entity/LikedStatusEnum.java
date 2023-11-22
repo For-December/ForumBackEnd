@@ -11,6 +11,7 @@ public enum LikedStatusEnum {
     UNLIKE(0, "取消点赞/未点赞"),
     ;
 
+    // string在redis中占用空间更小……
     private final Integer code;
 
     private final String msg;

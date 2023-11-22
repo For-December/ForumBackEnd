@@ -6,18 +6,24 @@ import com.fordece.forum.entity.dto.Star;
 
 public interface StarService extends IService<Star> {
 
-    // 谁给该帖子点赞了？
-    Page<Star> getStarListByPostId(Long postId);
+    void star(Long userId, Long postId);
 
-    // 该用户给哪些贴子点赞了？
-    void saveStarCountToDB();
+    void unStar(Long userId, Long postId);
 
-    void saveStarToRedis();
-    void unStarFromRedis();
-    void deleteStarFromRedis();
-    void incrementStarCount();
-    void decrementStarCount();
+    Boolean status(Long userId, Long postId);
 
-
-    void saveStarsToDB();
+//    // 谁给该帖子点赞了？
+//    Page<Star> getStarListByPostId(Long postId);
+//
+//    // 该用户给哪些贴子点赞了？
+//    void saveStarCountToDB();
+//
+//    void saveStarToRedis();
+//    void unStarFromRedis();
+//    void deleteStarFromRedis();
+//    void incrementStarCount();
+//    void decrementStarCount();
+//
+//
+//    void saveStarsToDB();
 }

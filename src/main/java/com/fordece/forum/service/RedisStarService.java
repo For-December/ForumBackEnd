@@ -6,15 +6,16 @@ import java.util.List;
 
 public interface RedisStarService {
 
-    void saveStar(String userId, String postId);
+    void saveStarToRedis(Long userId, Long postId);
 
-    void unStar(String userId,String postId);
+    void saveUnStarToRedis(Long userId, Long postId);
 
-    void deleteStar(String userId,String postId);
+    Boolean starStatus(Long userId, Long postId);
+    void deleteStar(Long userId, Long postId);
 
-    void incrementStarCount(String userId);
+    void incrementStarCount(Long postId);
 
-    void decrementStarCount(String userId);
+    void decrementStarCount(Long postId);
 
     List<Star> getStarDataList();
 
