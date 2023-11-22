@@ -19,5 +19,6 @@ public interface RedisStarService {
 
     List<Star> getStarDataList();
 
+    Long getStarNum(Long postId);
 
 }

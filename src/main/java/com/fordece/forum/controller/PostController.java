@@ -56,10 +56,10 @@ public class PostController {
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<RestBean<PostVO>> getPostById(@PathVariable Long id) { // 只有发帖名和token名一致才能发帖
+    public RestBean<PostVO> getPostById(@PathVariable Long id) { // 只有发帖名和token名一致才能发帖
         Post post = postService.getPostById(id);
         PostVO vo = post.asViewObject(PostVO.class);
-        return ResponseEntity.ok(RestBean.success(vo));
+        return RestBean.success(vo);
     }
 
 
@@ -94,10 +94,11 @@ public class PostController {
 
     // 公共的
     @GetMapping("/stars")
-    public RestBean<List<String>> getStarsList(
-            @RequestBody List<String> postIdArray) { // 点赞名和token一致
+    public RestBean<List<Long>> getStarsList(
+            @RequestBody @NotNull @Min(1) List<Long> postIdList) { // 点赞名和token一致
 
+        System.out.println(postIdList);
         // 返回依此对应的点赞数，给前端合并
-        return RestBean.success(postIdArray);
+        return RestBean.success(starService.starNum(postIdList));
     }
 }

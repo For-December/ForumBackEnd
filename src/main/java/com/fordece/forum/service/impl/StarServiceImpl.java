@@ -10,6 +10,8 @@ import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Slf4j
 @Service
 public class StarServiceImpl extends ServiceImpl<StarMapper, Star> implements StarService {
@@ -42,5 +44,12 @@ public class StarServiceImpl extends ServiceImpl<StarMapper, Star> implements St
     @Override
     public Boolean status(Long userId, Long postId) {
         return redisStarService.starStatus(userId, postId);
+    }
+
+    @Override
+    public List<Long> starNum(List<Long> postIdList) {
+        return postIdList.stream().map(
+                t -> redisStarService.getStarNum(t)
+        ).toList();
     }
 }
