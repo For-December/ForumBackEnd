@@ -16,6 +16,8 @@ public class Const {
     //保存用户被点赞数量的key
     public static final String POST_STAR_COUNTER = "post:star:counter";
 
+    public static final String POST_COMMENT_COUNTER = "post:comment:counter";
+
 
     public static final int ORDER_LIMIT = -101;
 

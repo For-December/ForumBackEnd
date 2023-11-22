@@ -67,17 +67,8 @@ public class CommentController {
             @RequestParam @NotNull Long postId,
             @RequestParam @NotNull String authorName
     ) {
-        if (commentService.query()
-                .eq("id", id)
-                .eq("post_id", postId)
-                .eq("author_name", authorName)
-                .oneOpt().isEmpty()) {// 评论不存在，或是用户尝试删除其他人的贴子
-            log.warn("用户非法删除评论：id: {} authorName: {}", id, authorName);
-            return ResponseEntity.badRequest().body(RestBean.forbidden("您只能删除自己已发布的评论~"));
-        }
 
-
-        if (commentService.removeById(id)) {
+        if (commentService.deleteComment(id, postId, authorName)) {
             commentService.clearCache(postId.toString());
             return ResponseEntity.ok(RestBean.success());
         }

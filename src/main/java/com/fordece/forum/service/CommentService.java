@@ -13,6 +13,8 @@ public interface CommentService extends IService<Comment> {
 
     Boolean createComment(CreateCommentVO vo);
 
-    void clearCache(String key);
+    Boolean deleteComment(Long id, Long postId, String authorName);
+
+    Boolean clearCache(String key);
 
 }
