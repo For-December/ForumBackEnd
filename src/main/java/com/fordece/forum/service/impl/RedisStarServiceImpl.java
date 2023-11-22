@@ -60,29 +60,23 @@ public class RedisStarServiceImpl implements RedisStarService {
     }
 
     @Override
-    public List<Star> getStarDataList() {
-        try (Cursor<Map.Entry<Object, Object>> cursor = redisTemplate.opsForHash().scan(Const.POST_STAR_COUNTER, ScanOptions.NONE)) {
-            while (cursor.hasNext()) {
-                Map.Entry<Object, Object> entry = cursor.next();
-                String key = (String) entry.getKey();
-
-                // 获取 postId 对应的评论数
-
-
-//                //分离出 postId 和 userId
-//                String[] split = key.split("::");
-//                String postId = split[0];
-//                String userId = split[1];
-//                Integer value = (Integer) entry.getValue();
-//
-//
-//                //存到 list 后从 Redis 中删除
-//                redisTemplate.opsForHash().delete(Const.POST_STAR_COUNTER, key);
-            }
+    public List<Long> getStaredPostList(Long userId) {
+        try (Cursor<Map.Entry<Object, Object>> cursor = redisTemplate.opsForHash().scan(Const.POST_USER_START_STATUS, ScanOptions.NONE)) {
+            return cursor.stream()
+                    .filter(t -> (Integer) t.getValue() > 0) // 为1
+                    .filter(t -> { // 选出和用户id相匹配的kv
+                        String[] split = t.getKey().toString().split("::");
+                        return split[1].equals(userId.toString());
+                    })
+                    .map(t -> {
+                        String[] split = t.getKey().toString().split("::");
+                        // 最终返回所有该用户点赞的贴子id
+                        return Long.parseLong(split[0]);
+                    }).toList();
         }
 
-        return null;
     }
+
 
     @Override
     public Long getStarNum(Long postId) {

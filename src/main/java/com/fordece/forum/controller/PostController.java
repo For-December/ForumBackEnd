@@ -15,6 +15,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -93,9 +94,9 @@ public class PostController {
 
 
     // 公共的
-    @GetMapping("/stars")
-    public RestBean<List<Long>> getStarsList(
-            @RequestBody @NotNull @Min(1) List<Long> postIdList) { // 点赞名和token一致
+    @PostMapping("/stars")
+    public RestBean<List<Long>> getStarsNumList(
+            @RequestBody @NotNull @Length(min = 1) List<Long> postIdList) { // 点赞名和token一致
 
         System.out.println(postIdList);
         // 返回依此对应的点赞数，给前端合并

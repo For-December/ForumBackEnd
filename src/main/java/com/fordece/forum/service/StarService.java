@@ -16,6 +16,8 @@ public interface StarService extends IService<Star> {
 
     List<Long> starNum(List<Long> postIdList);
 
+    List<Long> staredPosts(Long userId);
+
 //    // 谁给该帖子点赞了？
 //    Page<Star> getStarListByPostId(Long postId);
 //

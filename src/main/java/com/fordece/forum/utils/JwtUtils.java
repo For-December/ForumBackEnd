@@ -7,6 +7,7 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.core.GrantedAuthority;
@@ -20,6 +21,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+@Slf4j
 @Component
 public class JwtUtils {
 
@@ -50,6 +52,7 @@ public class JwtUtils {
             String id = jwt.getId();
             return deleteToken(id, jwt.getExpiresAt());
         } catch (JWTVerificationException e) {
+
             return false;
         }
     }
@@ -78,8 +81,14 @@ public class JwtUtils {
             // 如果已经失效了
             if (this.isInvalidToken(verify.getId())) return null;
             Date expiresAt = verify.getExpiresAt();
-            return new Date().after(expiresAt) ? null : verify;
+            if (new Date().after(expiresAt)) {
+                log.warn("token 已超时");
+                return null;
+            }
+            return verify;
+
         } catch (JWTVerificationException e) {
+            log.warn(e.getMessage());
             // 用户修改了JWT？验证失败
             return null;
         }

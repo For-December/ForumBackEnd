@@ -52,4 +52,9 @@ public class StarServiceImpl extends ServiceImpl<StarMapper, Star> implements St
                 t -> redisStarService.getStarNum(t)
         ).toList();
     }
+
+    @Override
+    public List<Long> staredPosts(Long userId) {
+        return redisStarService.getStaredPostList(userId);
+    }
 }
