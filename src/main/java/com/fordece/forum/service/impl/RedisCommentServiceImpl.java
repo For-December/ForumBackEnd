@@ -3,8 +3,12 @@ package com.fordece.forum.service.impl;
 import com.fordece.forum.service.RedisCommentService;
 import com.fordece.forum.utils.Const;
 import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Service;
 
+@Slf4j
+@Service
 public class RedisCommentServiceImpl implements RedisCommentService {
 
     @Resource
