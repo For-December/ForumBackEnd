@@ -60,9 +60,9 @@ public class FlowLimitFilter extends HttpFilter {
         long increment = Optional.ofNullable(
                         stringRedisTemplate.opsForValue().increment(Const.FLOW_LIMIT_COUNTER + ip))
                 .orElse(0L); // 到期则可能为空，这里让其为空时返回0
-        if (increment > 10) { // 如果 3秒内请求了10次，则封禁 ip
+        if (increment > 25) { // 如果 3秒内请求了25次，则封禁 ip
             stringRedisTemplate.opsForValue().set(
-                    Const.FLOW_LIMIT_BLOCK + ip, "", 30, TimeUnit.SECONDS);
+                    Const.FLOW_LIMIT_BLOCK + ip, "", 25, TimeUnit.SECONDS);
             return false;
         }
         return true; // 否则正常放行
