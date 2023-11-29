@@ -138,6 +138,14 @@
         </dependency>
 
 
+<!--minio-->
+        <dependency>
+            <groupId>io.minio</groupId>
+            <artifactId>minio</artifactId>
+            <version>8.4.3</version>
+        </dependency>
+
+
         <dependency>
             <groupId>com.github.plexpt</groupId>
             <artifactId>chatgpt</artifactId>
