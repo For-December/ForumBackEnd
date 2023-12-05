@@ -28,7 +28,7 @@ public class CommentController {
     CommentService commentService;
 
     @GetMapping("")
-    public ResponseEntity<RestBean<IPage<CommentVO>>> getComments(Long postId, Integer pageNum, Integer pageSize) {
+    public RestBean<IPage<CommentVO>> getComments(Long postId, Integer pageNum, Integer pageSize) {
 
         List<Comment> comments = commentService.fetchComments(postId, pageNum, pageSize);
         Page<CommentVO> commentPage = new Page<>();
@@ -37,7 +37,7 @@ public class CommentController {
                         t -> t.asViewObject(CommentVO.class)
                 ).toList());
 //        System.out.println(commentPage.getRecords().get(0).toString());
-        return ResponseEntity.ok(RestBean.success(commentPage));
+        return RestBean.success(commentPage);
 
 
     }
@@ -54,15 +54,15 @@ public class CommentController {
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<RestBean<CommentVO>> getCommentById(@PathVariable @Min(0) Long id) { // 必须大于等于0
+    public RestBean<CommentVO> getCommentById(@PathVariable @Min(0) Long id) { // 必须大于等于0
         Comment comment = commentService.getCommentById(id);
         CommentVO vo = comment.asViewObject(CommentVO.class);
-        return ResponseEntity.ok(RestBean.success(vo));
+        return RestBean.success(vo);
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("#authorName == authentication.name") // 普通用户只能删除自己的评论
-    public ResponseEntity<RestBean<Void>> deleteCommentById(
+    public RestBean<Void> deleteCommentById(
             @PathVariable @Min(0) Long id,
             @RequestParam @NotNull Long postId,
             @RequestParam @NotNull String authorName
@@ -70,10 +70,9 @@ public class CommentController {
 
         if (commentService.deleteComment(id, postId, authorName)) {
             commentService.clearCache(postId.toString());
-            return ResponseEntity.ok(RestBean.success());
+            return RestBean.success();
         }
-
-        return ResponseEntity.badRequest().body(RestBean.forbidden("评论删除出错，请联系管理员~"));
+        throw new RuntimeException("评论删除出错，请联系管理员~");
 
 
     }

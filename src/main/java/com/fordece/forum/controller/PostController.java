@@ -36,7 +36,7 @@ public class PostController {
     PostService postService;
 
     @GetMapping("")
-    public ResponseEntity<RestBean<IPage<PostVO>>> getPosts(@Min(0) Integer pageNum, @Min(1) Integer pageSize) {
+    public RestBean<IPage<PostVO>> getPosts(@Min(0) Integer pageNum, @Min(1) Integer pageSize) {
 
         List<Post> posts = postService.fetchPosts(pageNum, pageSize);
         Page<PostVO> postPage = new Page<>();
@@ -45,7 +45,7 @@ public class PostController {
                         t -> t.asViewObject(PostVO.class)
                 ).toList());
         System.out.println(postPage.getRecords().get(0).toString());
-        return ResponseEntity.ok(RestBean.success(postPage));
+        return RestBean.success(postPage));
 
 
     }
@@ -95,8 +95,7 @@ public class PostController {
     @GetMapping("/{id}")
     public RestBean<PostVO> getPostById(@PathVariable @NotNull Long id) { // 只有发帖名和token名一致才能发帖
         Post post = postService.getPostById(id);
-        PostVO vo = post.asViewObject(PostVO.class);
-        return RestBean.success(vo);
+        return RestBean.success(post.asViewObject(PostVO.class));
     }
 
 
