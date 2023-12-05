@@ -9,6 +9,7 @@ import com.fordece.forum.entity.vo.request.CreatePostVO;
 import com.fordece.forum.entity.vo.response.PostVO;
 import com.fordece.forum.service.PostService;
 import com.fordece.forum.service.StarService;
+import com.fordece.forum.utils.ChatGPTUtils;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
@@ -49,6 +50,9 @@ public class PostController {
 
     }
 
+    @Resource
+    ChatGPTUtils chatGPTUtils;
+
     @PostMapping("")
     @PreAuthorize("#authorName == authentication.name") // 防止冒充发帖
     public ResponseEntity<RestBean<Void>> createPost(
@@ -57,7 +61,8 @@ public class PostController {
             @Length(min = 1, max = 200, message = "帖子内容(text)的长度不合法")
             String text, /* 帖子文本 */
 
-            @RequestParam
+//            @RequestParam
+            // 图片可以为空
             List<MultipartFile> images, /* 贴子图片 */
 
             @RequestParam
@@ -70,7 +75,15 @@ public class PostController {
             @RequestParam @NotNull(message = "标签必须指定")
             String tags /* 贴子标签 */
 
-    ) { // 只有发帖名和token名一致才能发帖
+    ) {
+        if (images == null) {
+            images = new ArrayList<>();
+        }
+        // 只有发帖名和token名一致才能发帖
+        String check = chatGPTUtils.check(text);
+        if (check != null) {
+            return ResponseEntity.badRequest().body(RestBean.forbidden("贴子审核未通过=>" + check));
+        }
         if (!postService.createPost(text, images, authorId, authorName, tags)) {
             return ResponseEntity.badRequest().body(RestBean.forbidden("请勿顶替别人发贴~"));
         }
