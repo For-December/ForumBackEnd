@@ -13,12 +13,14 @@ import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,9 +48,19 @@ public class PostController {
     }
 
     @PostMapping("")
-    @PreAuthorize("#vo.authorName == authentication.name") // 防止冒充发帖
-    public ResponseEntity<RestBean<Void>> createPost(@RequestBody @Valid CreatePostVO vo) { // 只有发帖名和token名一致才能发帖
-        if (!postService.createPost(vo)) {
+    @PreAuthorize("#authorName == authentication.name") // 防止冒充发帖
+    public ResponseEntity<RestBean<Void>> createPost(
+            @Size(min = 1, max = 200, message = "帖子内容(content)的长度不合法") String content,
+            List<MultipartFile> images,
+            @NotNull(message = "帖子作者id不能为空")
+            Long authorId,
+            @NotNull(message = "帖子作者名字不能为空")
+            String authorName,
+            @NotNull(message = "标签必须指定")
+            String tags
+
+    ) { // 只有发帖名和token名一致才能发帖
+        if (!postService.createPost(content, images, authorId, authorName, tags)) {
             return ResponseEntity.badRequest().body(RestBean.forbidden("请勿顶替别人发贴~"));
         }
         postService.clearCache("latest");

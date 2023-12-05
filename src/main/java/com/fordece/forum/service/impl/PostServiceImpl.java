@@ -9,6 +9,7 @@ import com.fordece.forum.entity.dto.Post;
 import com.fordece.forum.entity.vo.request.CreatePostVO;
 import com.fordece.forum.mapper.PostMapper;
 import com.fordece.forum.service.AccountService;
+import com.fordece.forum.service.MinioService;
 import com.fordece.forum.service.PostService;
 import com.fordece.forum.service.StarService;
 import jakarta.annotation.Resource;
@@ -17,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
 import java.util.List;
@@ -53,17 +55,31 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
         log.info("已清除缓存：" + key);
     }
 
+    @Resource
+    MinioService minioService;
+
+
     @Override
-    public Boolean createPost(CreatePostVO vo) {
+    public Boolean createPost(String content,
+                              List<MultipartFile> images,
+                              Long authorId,
+                              String authorName,
+                              String tags) {
         // 检验 id 合法性
-        Account account = accountService.query().eq("id", vo.getAuthorId()).one();
-        if (!account.getUsername().equals(vo.getAuthorName())) {
-            log.warn("存在用户顶替发贴：{} != {}", vo.getAuthorId(), vo.getAuthorName());
+        Account account = accountService.query().eq("id", authorId).one();
+        if (!account.getUsername().equals(authorName)) {
+            log.warn("存在用户顶替发贴：{} != {}", authorId, authorName);
             return false;
         }
 
-        Post post = new Post(null, vo.getAuthorId(), vo.getAuthorName(), 0L, 0L, vo.getTags(), "标题", vo.getContent(), new Date(), new Date(), new Date(), null, false);
+
+        List<String> imageUrls = minioService.saveImages(images);
+        log.warn(imageUrls.toString());
+
+        Post post = new Post(null, authorId, authorName, 0L, 0L, tags, "标题", content, new Date(), new Date(), new Date(), null, false);
 
         return this.save(post);
     }
+
+
 }

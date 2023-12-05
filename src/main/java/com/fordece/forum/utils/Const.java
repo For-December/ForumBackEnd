@@ -23,4 +23,7 @@ public class Const {
 
     public static final int ORDER_CORS = -102;
 
+
+    public static final String IMAGE_BUCKET_NAME = "forum-images";
+
 }
