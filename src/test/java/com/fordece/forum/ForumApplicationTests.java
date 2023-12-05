@@ -10,4 +10,9 @@ class ForumApplicationTests {
     void contextLoads() {
     }
 
+    @Test
+    void minioTest(){
+
+    }
+
 }
