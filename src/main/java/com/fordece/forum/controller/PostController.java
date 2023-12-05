@@ -45,7 +45,7 @@ public class PostController {
                         t -> t.asViewObject(PostVO.class)
                 ).toList());
         System.out.println(postPage.getRecords().get(0).toString());
-        return RestBean.success(postPage));
+        return RestBean.success(postPage);
 
 
     }
