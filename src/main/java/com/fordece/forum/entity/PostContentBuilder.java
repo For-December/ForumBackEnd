@@ -27,6 +27,13 @@ public class PostContentBuilder {
         return this;
     }
 
+    public PostContentBuilder buildImages(List<String> images) {
+        for (String image : images) {
+            this.buildImage(image);
+        }
+        return this;
+    }
+
     public List<PostMeta> getContent() {
         return content;
     }

@@ -15,6 +15,7 @@ public class PostVO implements Serializable {
     private String tags;
     private String title;
     private String content;
+    private String contentJson;
     private Date latestRepliedTime;
     private Date createTime;
     private Date modifyTime;

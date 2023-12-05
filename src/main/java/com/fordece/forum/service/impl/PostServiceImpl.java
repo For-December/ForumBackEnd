@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.fordece.forum.entity.PostContentBuilder;
 import com.fordece.forum.entity.PostMeta;
 import com.fordece.forum.entity.dto.Account;
 import com.fordece.forum.entity.dto.Post;
@@ -61,7 +62,7 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
 
 
     @Override
-    public Boolean createPost(String content,
+    public Boolean createPost(String text,
                               List<MultipartFile> images,
                               Long authorId,
                               String authorName,
@@ -76,10 +77,11 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
 
         List<String> imageUrls = minioService.saveImages(images);
         log.warn(imageUrls.toString());
+        String content = PostContentBuilder.newBuilder().buildText(text).buildImages(imageUrls).build();
 
-//        Post post = new Post(null, authorId, authorName, 0L, 0L, tags, "标题", content, new Date(), new Date(), new Date(), null, false);
+        Post post = new Post(null, authorId, authorName, 0L, 0L, tags, "标题", content,text, new Date(), new Date(), new Date(), null, false);
 
-        return this.save(null);
+        return this.save(post);
     }
 
 

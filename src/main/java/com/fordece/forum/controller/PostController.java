@@ -19,6 +19,7 @@ import lombok.val;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -28,12 +29,13 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/api/v1/posts")
+@Validated // 添加该注解，单参数校验才会生效！
 public class PostController {
     @Resource
     PostService postService;
 
     @GetMapping("")
-    public ResponseEntity<RestBean<IPage<PostVO>>> getPosts(Integer pageNum, Integer pageSize) {
+    public ResponseEntity<RestBean<IPage<PostVO>>> getPosts(@Min(0) Integer pageNum, @Min(1) Integer pageSize) {
 
         List<Post> posts = postService.fetchPosts(pageNum, pageSize);
         Page<PostVO> postPage = new Page<>();
@@ -50,17 +52,26 @@ public class PostController {
     @PostMapping("")
     @PreAuthorize("#authorName == authentication.name") // 防止冒充发帖
     public ResponseEntity<RestBean<Void>> createPost(
-            @Size(min = 1, max = 200, message = "帖子内容(content)的长度不合法") String content,
-            List<MultipartFile> images,
+            @RequestParam
+            @NotNull(message = "必须填写文本内容")
+            @Length(min = 1, max = 200, message = "帖子内容(text)的长度不合法")
+            String text, /* 帖子文本 */
+
+            @RequestParam
+            List<MultipartFile> images, /* 贴子图片 */
+
+            @RequestParam
             @NotNull(message = "帖子作者id不能为空")
-            Long authorId,
-            @NotNull(message = "帖子作者名字不能为空")
-            String authorName,
-            @NotNull(message = "标签必须指定")
-            String tags
+            Long authorId, /* 发帖人Id */
+
+            @RequestParam @NotNull(message = "帖子作者名字不能为空")
+            String authorName, /* 发帖人名 */
+
+            @RequestParam @NotNull(message = "标签必须指定")
+            String tags /* 贴子标签 */
 
     ) { // 只有发帖名和token名一致才能发帖
-        if (!postService.createPost(content, images, authorId, authorName, tags)) {
+        if (!postService.createPost(text, images, authorId, authorName, tags)) {
             return ResponseEntity.badRequest().body(RestBean.forbidden("请勿顶替别人发贴~"));
         }
         postService.clearCache("latest");
@@ -69,7 +80,7 @@ public class PostController {
 
 
     @GetMapping("/{id}")
-    public RestBean<PostVO> getPostById(@PathVariable Long id) { // 只有发帖名和token名一致才能发帖
+    public RestBean<PostVO> getPostById(@PathVariable @NotNull Long id) { // 只有发帖名和token名一致才能发帖
         Post post = postService.getPostById(id);
         PostVO vo = post.asViewObject(PostVO.class);
         return RestBean.success(vo);
@@ -82,9 +93,9 @@ public class PostController {
     @PostMapping("/star/{postId}")
     @PreAuthorize("#userName == authentication.name")
     public RestBean<Boolean> setStarStatus(
-            @PathVariable @Min((0)) Long postId,
+            @PathVariable @Min(0) Long postId,
             @RequestParam @Min(0) Long userId,
-            @RequestParam @Min(0) String userName,
+            @RequestParam @Length String userName,
             @RequestParam @NotNull Boolean like) { // 点赞名和token一致
         log.info(userName);
         if (like) {
@@ -100,7 +111,7 @@ public class PostController {
     public RestBean<Boolean> getStarStatus(
             @PathVariable @Min((0)) Long postId,
             @RequestParam @Min(0) Long userId,
-            @RequestParam @Min(0) String userName) { // 点赞名和token一致
+            @RequestParam @Length String userName) { // 点赞名和token一致
         return RestBean.success(starService.status(userId, postId));
     }
 
@@ -108,7 +119,7 @@ public class PostController {
     // 公共的
     @PostMapping("/stars")
     public RestBean<List<Long>> getStarsNumList(
-            @RequestBody @NotNull @Length(min = 1) List<Long> postIdList) { // 点赞名和token一致
+            @RequestBody @NotNull @Size(min = 1) List<Long> postIdList) { // 点赞名和token一致
 
         System.out.println(postIdList);
         // 返回依此对应的点赞数，给前端合并
