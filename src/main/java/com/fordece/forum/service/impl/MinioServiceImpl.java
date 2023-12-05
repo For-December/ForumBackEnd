@@ -74,8 +74,7 @@ public class MinioServiceImpl implements MinioService {
                             .build());
         } catch (MinioException | InvalidKeyException | NoSuchAlgorithmException e) {
             // 处理异常
-            e.printStackTrace();
-            throw new IOException("Failed to upload image");
+            throw new IOException("Failed to upload image", e);
         }
     }
 

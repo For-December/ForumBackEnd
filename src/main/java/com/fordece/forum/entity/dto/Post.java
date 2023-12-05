@@ -5,9 +5,11 @@ import com.fordece.forum.entity.BaseData;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.awt.*;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @TableName("db_post")
@@ -24,7 +26,8 @@ public class Post implements BaseData, Serializable {
     private Long upvoteCount;
     private String tags;
     private String title;
-    private String content;
+    private String contentJson; // JSON 格式的数据
+    private String content; // 之前的旧版帖子内容
     private Date latestRepliedTime;
     private Date createTime;
     private Date modifyTime;

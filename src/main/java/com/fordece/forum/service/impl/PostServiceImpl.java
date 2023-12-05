@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.fordece.forum.entity.PostMeta;
 import com.fordece.forum.entity.dto.Account;
 import com.fordece.forum.entity.dto.Post;
 import com.fordece.forum.entity.vo.request.CreatePostVO;
@@ -76,9 +77,9 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
         List<String> imageUrls = minioService.saveImages(images);
         log.warn(imageUrls.toString());
 
-        Post post = new Post(null, authorId, authorName, 0L, 0L, tags, "标题", content, new Date(), new Date(), new Date(), null, false);
+//        Post post = new Post(null, authorId, authorName, 0L, 0L, tags, "标题", content, new Date(), new Date(), new Date(), null, false);
 
-        return this.save(post);
+        return this.save(null);
     }
 
 
