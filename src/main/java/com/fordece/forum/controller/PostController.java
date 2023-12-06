@@ -65,6 +65,9 @@ public class PostController {
             // 图片可以为空
             List<MultipartFile> images, /* 贴子图片 */
 
+            // 视频也可以为空
+            List<MultipartFile> videos, /* 贴子视频 */
+
             @RequestParam
             @NotNull(message = "帖子作者id不能为空")
             Long authorId, /* 发帖人Id */
@@ -79,12 +82,21 @@ public class PostController {
         if (images == null) {
             images = new ArrayList<>();
         }
-        // 只有发帖名和token名一致才能发帖
+        if (videos == null) {
+            videos = new ArrayList<>();
+        }
+
+        // ai 审核
         String check = chatGPTUtils.check(text);
         if (check != null) {
             return ResponseEntity.badRequest().body(RestBean.forbidden("贴子审核未通过=>" + check));
         }
-        if (!postService.createPost(text, images, authorId, authorName, tags)) {
+
+        // 只有发帖名和token名一致才能发帖
+        if (!postService.createPost(text,
+                images, videos,
+                authorId, authorName,
+                tags)) {
             return ResponseEntity.badRequest().body(RestBean.forbidden("请勿顶替别人发贴~"));
         }
         postService.clearCache("latest");

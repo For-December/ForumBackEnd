@@ -18,6 +18,7 @@ public interface PostService extends IService<Post> {
 
     Boolean createPost(String content,
                        List<MultipartFile> images,
+                       List<MultipartFile> videos,
                        Long authorId,
                        String authorName,
                        String tags);

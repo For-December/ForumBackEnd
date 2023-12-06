@@ -64,6 +64,7 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
     @Override
     public Boolean createPost(String text,
                               List<MultipartFile> images,
+                              List<MultipartFile> videos,
                               Long authorId,
                               String authorName,
                               String tags) {
@@ -77,9 +78,16 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
 
         List<String> imageUrls = minioService.saveImages(images);
         log.warn(imageUrls.toString());
-        String content = PostContentBuilder.newBuilder().buildText(text).buildImages(imageUrls).build();
 
-        Post post = new Post(null, authorId, authorName, 0L, 0L, tags, "标题", content,text, new Date(), new Date(), new Date(), null, false);
+        List<String> videoUrls = minioService.saveVideos(videos);
+
+        String content = PostContentBuilder.newBuilder()
+                .buildText(text)
+                .buildImages(imageUrls)
+                .buildVideos(videoUrls)
+                .build();
+
+        Post post = new Post(null, authorId, authorName, 0L, 0L, tags, "标题", content, text, new Date(), new Date(), new Date(), null, false);
 
         return this.save(post);
     }
