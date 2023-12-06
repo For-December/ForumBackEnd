@@ -1,7 +1,5 @@
 package com.fordece.forum.service;
 
-import com.fordece.forum.entity.dto.Star;
-
 import java.util.List;
 
 public interface RedisStarService {
