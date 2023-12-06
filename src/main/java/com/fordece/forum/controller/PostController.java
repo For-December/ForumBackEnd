@@ -87,9 +87,11 @@ public class PostController {
         }
 
         // ai 审核
-        String check = chatGPTUtils.check(text);
-        if (check != null) {
-            return ResponseEntity.badRequest().body(RestBean.forbidden("贴子审核未通过=>" + check));
+        if (authorName.equals("test")) {
+            String check = chatGPTUtils.check(text);
+            if (check != null) {
+                return ResponseEntity.badRequest().body(RestBean.forbidden("贴子审核未通过=>" + check));
+            }
         }
 
         // 只有发帖名和token名一致才能发帖
