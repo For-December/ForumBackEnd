@@ -25,5 +25,6 @@ public class Const {
 
 
     public static final String IMAGE_BUCKET_NAME = "forum-images";
+    public static final String VIDEO_BUCKET_NAME = "forum-videos";
 
 }

@@ -25,32 +25,26 @@ public class MinioServiceImpl implements MinioService {
 
     @Override
     public List<String> saveImages(List<MultipartFile> images) {
-        List<String> imageUrls = new ArrayList<>();
-        for (MultipartFile image : images) {
-            String imageUrl;
-            try {
-                imageUrl = uploadFile(image, Const.IMAGE_BUCKET_NAME);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-            imageUrls.add(imageUrl);
-        }
-        return imageUrls;
+        return saveFiles(images, Const.IMAGE_BUCKET_NAME);
     }
 
     @Override
     public List<String> saveVideos(List<MultipartFile> videos) {
-        List<String> videoUrls = new ArrayList<>();
-        for (MultipartFile video : videos) {
-            String videoUrl;
+        return saveFiles(videos, Const.VIDEO_BUCKET_NAME);
+    }
+
+    private List<String> saveFiles(List<MultipartFile> files, String bucketName) {
+        List<String> fileUrls = new ArrayList<>();
+        for (MultipartFile file : files) {
+            String fileUrl;
             try {
-                videoUrl = uploadFile(video, "test");
+                fileUrl = uploadFile(file, bucketName);
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                throw new RuntimeException(bucketName + ": " + e);
             }
-            videoUrls.add(videoUrl);
+            fileUrls.add(fileUrl);
         }
-        return videoUrls;
+        return fileUrls;
     }
 
 
