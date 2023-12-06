@@ -87,7 +87,7 @@ public class PostController {
         }
 
         // ai 审核
-        if (authorName.equals("test")) {
+        if (!authorName.equals("test")) {
             String check = chatGPTUtils.check(text);
             if (check != null) {
                 return ResponseEntity.badRequest().body(RestBean.forbidden("贴子审核未通过=>" + check));

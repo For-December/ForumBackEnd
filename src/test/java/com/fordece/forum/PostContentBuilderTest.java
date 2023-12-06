@@ -14,7 +14,7 @@ public class PostContentBuilderTest {
 
     @BeforeAll
     public static void setData() {
-        contentBuilder = PostContentBuilder.newBuilder().buildText("Hello").buildImage("https://www.fordece.cn/");
+        contentBuilder = PostContentBuilder.newBuilder().buildText("Hello").buildImage("https://www.fordece.cn/").buildVideo("https://video.fordece.cn/");
     }
 
     @Test

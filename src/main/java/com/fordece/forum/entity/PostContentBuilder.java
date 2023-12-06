@@ -42,7 +42,7 @@ public class PostContentBuilder {
 
     public PostContentBuilder buildVideos(List<String> videos) {
         for (String video : videos) {
-            this.buildImage(video);
+            this.buildVideo(video);
         }
         return this;
     }
