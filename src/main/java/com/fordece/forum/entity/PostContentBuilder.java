@@ -27,9 +27,22 @@ public class PostContentBuilder {
         return this;
     }
 
+    public PostContentBuilder buildVideo(String video) {
+        PostMeta meta = PostMeta.builder().type("video").url(video).build();
+        this.content.add(meta);
+        return this;
+    }
+
     public PostContentBuilder buildImages(List<String> images) {
         for (String image : images) {
             this.buildImage(image);
+        }
+        return this;
+    }
+
+    public PostContentBuilder buildVideos(List<String> videos) {
+        for (String video : videos) {
+            this.buildImage(video);
         }
         return this;
     }
