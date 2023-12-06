@@ -29,7 +29,7 @@ public class MinioServiceImpl implements MinioService {
         for (MultipartFile image : images) {
             String imageUrl;
             try {
-                imageUrl = uploadImage(image);
+                imageUrl = uploadFile(image, Const.IMAGE_BUCKET_NAME);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -38,8 +38,23 @@ public class MinioServiceImpl implements MinioService {
         return imageUrls;
     }
 
+    @Override
+    public List<String> saveVideos(List<MultipartFile> videos) {
+        List<String> videoUrls = new ArrayList<>();
+        for (MultipartFile video : videos) {
+            String videoUrl;
+            try {
+                videoUrl = uploadFile(video, "test");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            videoUrls.add(videoUrl);
+        }
+        return videoUrls;
+    }
 
-    private String uploadImage(MultipartFile file) throws IOException {
+
+    private String uploadFile(MultipartFile file, String bucketName) throws IOException {
         try {
             // 获取文件名
             String originalFilename = file.getOriginalFilename();
@@ -53,13 +68,15 @@ public class MinioServiceImpl implements MinioService {
             InputStream inputStream = file.getInputStream();
 
             // 检查桶是否存在，不存在则创建
-            if (!minioClient.bucketExists(BucketExistsArgs.builder().bucket(Const.IMAGE_BUCKET_NAME).build())) {
-                minioClient.makeBucket(MakeBucketArgs.builder().bucket(Const.IMAGE_BUCKET_NAME).build());
+            if (!minioClient.bucketExists(BucketExistsArgs.builder()
+                    .bucket(bucketName)
+                    .build())) {
+                minioClient.makeBucket(MakeBucketArgs.builder().bucket(bucketName).build());
             }
 
             // 上传文件到 MinIO 桶中
             minioClient.putObject(PutObjectArgs.builder()
-                    .bucket(Const.IMAGE_BUCKET_NAME)
+                    .bucket(bucketName)
                     .object(objectName)
                     .stream(inputStream, inputStream.available(), -1)
                     .contentType(file.getContentType())
@@ -68,13 +85,13 @@ public class MinioServiceImpl implements MinioService {
             // 生成图片的访问链接
             return minioClient.getPresignedObjectUrl(
                     GetPresignedObjectUrlArgs.builder()
-                            .bucket(Const.IMAGE_BUCKET_NAME)
+                            .bucket(bucketName)
                             .object(objectName)
                             .method(Method.GET)
                             .build());
         } catch (MinioException | InvalidKeyException | NoSuchAlgorithmException e) {
             // 处理异常
-            throw new IOException("Failed to upload image", e);
+            throw new IOException("Failed to upload file", e);
         }
     }
 

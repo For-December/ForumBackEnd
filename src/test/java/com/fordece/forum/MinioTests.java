@@ -1,34 +1,56 @@
 package com.fordece.forum;
 
+import com.fordece.forum.service.MinioService;
 import io.minio.GetObjectArgs;
 import io.minio.MinioClient;
 import io.minio.RemoveObjectArgs;
 import io.minio.UploadObjectArgs;
 import io.minio.errors.MinioException;
+import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
 
 @SpringBootTest
+@Slf4j
 public class MinioTests {
     @Autowired
     private MinioClient minioClient;
+
+    @Resource
+    private MinioService minioService;
+
+    @Test
+    public void testService() throws IOException {
+        ArrayList<MultipartFile> videos = new ArrayList<>();
+        MultipartFile video = new MockMultipartFile("test", "testVideo.mp4", "video/mp4", new FileInputStream("C:\\Users\\forDece\\Desktop\\toJson\\视频.mp4"));
+        videos.add(video);
+        List<String> strings = minioService.saveVideos(videos);
+        log.warn(strings.toString());
+
+    }
+
+
     @Test
     public void testMinioClientPositive() {
         Assertions.assertNotNull(minioClient);
     }
 
     @Test
-    public void testBase(){
+    public void testBase() {
         try {
             // 定义存储桶和对象名称
             String bucketName = "my-images";
