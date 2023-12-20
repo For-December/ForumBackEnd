@@ -1,18 +1,43 @@
 spring:
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 20MB
   security:
     jwt:
-      key: abcdefg
-      expire: 7
+      key: # jwt的密钥
+      expire: # jwt生成token的过期时间（单位：day）
   data:
     redis:
-      host: 192.168.226.134
+      host: # redis主机地址 127.0.0.1
   datasource:
-    url: jdbc:mysql://localhost:3306/sukura_fox_forum
-    username: root
-    password: fy
+    url: # mysql数据源：jdbc:mysql://localhost:3306/sakura_fox_forum
+    username: # 用户名
+    password: # 密码
     driver-class-name: com.mysql.cj.jdbc.Driver
   reactor:
     debug-agent:
       enabled: true
+  mail: # 用来发验证码
+    host: # 邮箱服务器，如 smtp.qq.com
+    username: # 邮箱
+    password: # 从邮箱服务器申请的token
+  rabbitmq: # rabbitmq 默认配置
+    username: guest
+    password: guest
+    virtual-host: /
+    port: 5672
+    addresses: localhost
+  amqp:
+    deserialization:
+      trust:
+        all: true
 
-debug: true
+openai:
+  key: # api-key
+  endpoint: # 反向代理，不代理就填open官方的=> https://api.openai.com/
+
+minio: # minio默认配置，可自行更改
+  endpoint: http://127.0.0.1:9000
+  access-key: minioadmin
+  secret-key: minioadmin
