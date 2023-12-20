@@ -70,7 +70,10 @@ public class MinioServiceImpl implements MinioService {
             if (!minioClient.bucketExists(BucketExistsArgs.builder()
                     .bucket(bucketName)
                     .build())) {
-                minioClient.makeBucket(MakeBucketArgs.builder().bucket(bucketName).build());
+                minioClient.makeBucket(
+                        MakeBucketArgs.builder()
+                                .bucket(bucketName)
+                                .build());
                 // 设置 Policy 为 Public
                 minioClient.setBucketPolicy(
                         SetBucketPolicyArgs.builder()

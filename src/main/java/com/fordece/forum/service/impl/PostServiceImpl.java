@@ -2,6 +2,7 @@ package com.fordece.forum.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.conditions.query.QueryChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fordece.forum.entity.PostContentBuilder;
@@ -87,6 +88,12 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
         Post post = new Post(null, authorId, authorName, 0L, 0L, tags, "标题", content, text, new Date(), new Date(), new Date(), null, false);
 
         return this.save(post);
+    }
+
+    @Override
+    public Boolean deletePost(Long postId, Long authorId, String authorName) {
+        QueryChainWrapper<Post> eq = this.query().eq("id", postId).eq("author_id", authorId).eq("author_name", authorName);
+        return this.baseMapper.delete(eq) > 0;
     }
 
 

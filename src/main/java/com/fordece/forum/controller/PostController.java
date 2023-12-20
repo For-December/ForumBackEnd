@@ -113,6 +113,15 @@ public class PostController {
     }
 
 
+    @DeleteMapping("/{id}")
+    @PreAuthorize("#authorName == authentication.name") // 防止冒充发帖
+    public RestBean<Boolean> deletePost(@PathVariable @NotNull Long id,
+                                        @RequestParam Long authorId,
+                                        @RequestParam String authorName) {
+        // 只有发帖名和token名一致才能删贴
+        return RestBean.success(postService.deletePost(id, authorId, authorName));
+    }
+
     @Resource
     StarService starService;
 
