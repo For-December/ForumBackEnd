@@ -14,13 +14,16 @@ public class PostContentBuilderTest {
 
     @BeforeAll
     public static void setData() {
-        contentBuilder = PostContentBuilder.newBuilder().buildText("Hello").buildImage("https://www.fordece.cn/").buildVideo("https://video.fordece.cn/");
+        contentBuilder = PostContentBuilder.newBuilder()
+                .buildText("Hello")
+                .buildImage("https://www.fordece.cn/")
+                .buildVideo("https://video.fordece.cn/");
     }
 
     @Test
     public void testGetContent() {
 
-        assertEquals(2, contentBuilder.getContent().size());
+        assertEquals(3, contentBuilder.getContent().size());
         assertEquals("text", contentBuilder.getContent().get(0).getType());
         assertEquals("Hello", contentBuilder.getContent().get(0).getText());
 
@@ -32,7 +35,7 @@ public class PostContentBuilderTest {
     public void testToJson() {
 
 
-        String expectedJson = "[{\"text\":\"Hello\",\"type\":\"text\"},{\"type\":\"image\",\"url\":\"https://www.fordece.cn/\"}]";
+        String expectedJson = "[{\"text\":\"Hello\",\"type\":\"text\"},{\"type\":\"image\",\"url\":\"https://www.fordece.cn/\"},{\"type\":\"video\",\"url\":\"https://video.fordece.cn/\"}]";
         assertEquals(expectedJson, contentBuilder.build());
     }
 

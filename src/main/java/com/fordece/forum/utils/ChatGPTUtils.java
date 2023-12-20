@@ -32,13 +32,14 @@ public class ChatGPTUtils {
                 "\"" + text + "\"";
         String res = chatGPT.chat(ask);
         log.info(res);
-        if (res.contains("true")) {
-            return null;
-        } else {
-            return res;
-        }
-
+//        if (res.contains("true")) {
+//            return null;
+//        } else {
+//            return res;
+//        }
+        return res.contains("true") ? null : res;
     }
+    // SSE
 
     public Boolean streamCheck(String text) {
 
@@ -49,6 +50,7 @@ public class ChatGPTUtils {
                 .messages(List.of(message))
                 .build();
         chatGPTStream.streamChatCompletion(chatCompletion, listener);
+
         listener.setOnComplate(s -> {
             if (s.contains("true")) {
                 System.out.println(s);

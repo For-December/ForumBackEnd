@@ -1,5 +1,6 @@
 package com.fordece.forum.service.impl;
 
+import com.fordece.forum.config.MinioConfig;
 import com.fordece.forum.service.MinioService;
 import com.fordece.forum.utils.Const;
 import io.minio.*;
@@ -16,12 +17,16 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Service
 public class MinioServiceImpl implements MinioService {
     @Resource
     MinioClient minioClient;
+
+    @Resource
+    MinioConfig minioConfig;
 
     @Override
     public List<String> saveImages(List<MultipartFile> images) {
@@ -66,7 +71,15 @@ public class MinioServiceImpl implements MinioService {
                     .bucket(bucketName)
                     .build())) {
                 minioClient.makeBucket(MakeBucketArgs.builder().bucket(bucketName).build());
+                // 设置 Policy 为 Public
+                minioClient.setBucketPolicy(
+                        SetBucketPolicyArgs.builder()
+                                .bucket(bucketName)
+                                .config(publicBucketPolicy(bucketName))
+                                .build()
+                );
             }
+
 
             // 上传文件到 MinIO 桶中
             minioClient.putObject(PutObjectArgs.builder()
@@ -76,17 +89,58 @@ public class MinioServiceImpl implements MinioService {
                     .contentType(file.getContentType())
                     .build());
 
+
             // 生成图片的访问链接
-            return minioClient.getPresignedObjectUrl(
-                    GetPresignedObjectUrlArgs.builder()
-                            .bucket(bucketName)
-                            .object(objectName)
-                            .method(Method.GET)
-                            .build());
+            return minioConfig.getAccessUrl(bucketName, objectName);
+
+
         } catch (MinioException | InvalidKeyException | NoSuchAlgorithmException e) {
             // 处理异常
             throw new IOException("Failed to upload file", e);
         }
+    }
+
+
+    public static String publicBucketPolicy(String bucketName) {
+        return "{\n" +
+                "    \"Version\": \"2012-10-17\",\n" +
+                "    \"Statement\": [\n" +
+                "        {\n" +
+                "            \"Effect\": \"Allow\",\n" +
+                "            \"Principal\": {\n" +
+                "                \"AWS\": [\n" +
+                "                    \"*\"\n" +
+                "                ]\n" +
+                "            },\n" +
+                "            \"Action\": [\n" +
+                "                \"s3:GetBucketLocation\",\n" +
+                "                \"s3:ListBucket\",\n" +
+                "                \"s3:ListBucketMultipartUploads\"\n" +
+                "            ],\n" +
+                "            \"Resource\": [\n" +
+                "                \"arn:aws:s3:::" + bucketName + "\"\n" +
+                "            ]\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"Effect\": \"Allow\",\n" +
+                "            \"Principal\": {\n" +
+                "                \"AWS\": [\n" +
+                "                    \"*\"\n" +
+                "                ]\n" +
+                "            },\n" +
+                "            \"Action\": [\n" +
+                "                \"s3:AbortMultipartUpload\",\n" +
+                "                \"s3:DeleteObject\",\n" +
+                "                \"s3:GetObject\",\n" +
+                "                \"s3:ListMultipartUploadParts\",\n" +
+                "                \"s3:PutObject\"\n" +
+                "            ],\n" +
+                "            \"Resource\": [\n" +
+                "                \"arn:aws:s3:::" + bucketName + "/*\"\n" +
+                "            ]\n" +
+                "        }\n" +
+                "    ]\n" +
+                "}";
     }
 
 

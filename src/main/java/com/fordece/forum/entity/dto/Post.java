@@ -3,6 +3,7 @@ package com.fordece.forum.entity.dto;
 import com.baomidou.mybatisplus.annotation.*;
 import com.fordece.forum.entity.BaseData;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 
 import java.awt.*;

@@ -24,4 +24,7 @@ public class MinioConfig {
                 .build();
     }
 
+    public String getAccessUrl(String bucketName, String objectName) {
+        return minioEndpoint + "/" + bucketName + "/" + objectName;
+    }
 }

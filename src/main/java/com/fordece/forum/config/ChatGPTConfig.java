@@ -20,6 +20,7 @@ public class ChatGPTConfig {
     @Bean
     public ChatGPT chatGPT() {
         return ChatGPT.builder()
+                .timeout(60 * 1000)
                 .apiKey(key)
                 .apiHost(endpoint) //反向代理地址
                 .build()
@@ -35,4 +36,5 @@ public class ChatGPTConfig {
                 .build()
                 .init();
     }
+
 }

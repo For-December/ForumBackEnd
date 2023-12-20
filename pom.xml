@@ -11,7 +11,7 @@
     <groupId>com.forDece</groupId>
     <artifactId>Forum</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
     <name>Forum</name>
     <description>Forum</description>
     <properties>
